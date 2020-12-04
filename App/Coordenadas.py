@@ -91,18 +91,18 @@ lineaVerde = ["Piraeus", "Faliro", "Moschato", "Kallithea", "Tavros", "Petralona
 
 # with open('DistanciaEnLineaRoja.csv', 'w') as metro:
 #     distancias_writer = csv.writer(metro, delimiter=',')
-    # with open('MetroRojo.csv') as csv_file:
-    #     csv_reader = csv.reader(csv_file, delimiter=',')
-    #     cont = 0
-    #     prev = None
-    #     distancias = []
-    #     for station in csv_reader:
-    #         if cont > 0:
-    #             distance = geodesic((station[1], station[2]), (prev[1], prev[2])).km
-    #             distancias_writer.writerow([prev[0], station[0], distance])
-    #         prev = station
-    #         cont += 1
-    #         # print(station)
+#     with open('MetroRojo.csv') as csv_file:
+#         csv_reader = csv.reader(csv_file, delimiter=',')
+#         cont = 0
+#         prev = None
+#         distancias = []
+#         for station in csv_reader:
+#             if cont > 0:
+#                 distance = geodesic((station[1], station[2]), (prev[1], prev[2])).km
+#                 distancias_writer.writerow([prev[0], station[0], distance])
+#             prev = station
+#             cont += 1
+#             # print(station)
     
 # with open('DistanciaEnLineaAzul.csv', 'w') as metro:
 #     distancias_writer = csv.writer(metro, delimiter=',')
