@@ -1,5 +1,5 @@
-from WorkerSignal import WorkerSignals
-from PyQt5 import QtCore
+from App.WorkerSignal import WorkerSignals
+from PySide2 import QtCore
 import traceback, sys
 
 class Worker(QtCore.QRunnable):
@@ -24,16 +24,15 @@ class Worker(QtCore.QRunnable):
         self.kwargs = kwargs
         self.signals = WorkerSignals()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()  # QtCore.Slot
     def run(self):
         '''
         Initialise the runner function with passed args, kwargs.
         '''
-           # Retrieve args/kwargs here; and fire processing using them
+
+        # Retrieve args/kwargs here; and fire processing using them
         try:
-            result = self.fn(
-                *self.args, **self.kwargs
-            )
+            result = self.fn(*self.args, **self.kwargs)
         except:
             traceback.print_exc()
             exctype, value = sys.exc_info()[:2]
@@ -42,19 +41,3 @@ class Worker(QtCore.QRunnable):
             self.signals.result.emit(result)  # Return the result of the processing
         finally:
             self.signals.finished.emit()  # Done
-
-
-# def execute_this(msg, msg2):
-#     import time
-#     print("thread empezando")
-#     time.sleep(3)
-#     print("{}, {}".format(msg, msg2))
-#     pass
-
-# if __name__ == "__main__":
-#     threadpool = QtCore.QThreadPool()
-#     worker = Worker(execute_this, "hola", "mundo")
-#     threadpool.start(worker)
-#     import time
-#     time.sleep(5)
-#     pass

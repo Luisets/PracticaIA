@@ -1,4 +1,4 @@
-from PyQt5 import QtCore
+from PySide2 import QtCore
 
 class WorkerSignals(QtCore.QObject):
     '''
@@ -16,7 +16,7 @@ class WorkerSignals(QtCore.QObject):
         `object` data returned from processing, anything
 
     '''
-    finished = QtCore.pyqtSignal()
-    error =  QtCore.pyqtSignal(tuple)
-    result =  QtCore.pyqtSignal(object)
-    progress =  QtCore.pyqtSignal(int)
+    finished = QtCore.Signal()
+    error =  QtCore.Signal(tuple)
+    result =  QtCore.Signal(object)
+    progress =  QtCore.Signal(int)

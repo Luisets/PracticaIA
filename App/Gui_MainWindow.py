@@ -1,22 +1,22 @@
-from time import sleep
-from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtWidgets import QWidget
-
-from sip import setdeleted
-from Worker import Worker
+from PySide2.QtGui import QIcon, QPixmap
+from PySide2.QtWidgets import QWidget
+from PySide2 import QtWebEngineWidgets
+from PySide2 import QtWidgets
+from PySide2 import QtCore
+from PySide2 import QtGui
+from App.Worker import Worker
+import App.Algorithm as Algorithm
 import time
-from PyQt5 import QtGui
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
-
+import App.Mapa as mapa
+import io
 
 
 class Gui_MainWindow(object):
 
     # definimos la ubicacion del icono
-    icon_Path = ".\\images\\logo.ico"
-    logo_Path = ".\\images\\logo.png"
-    load_Path = ".\\images\\carga.gif"
+    icon_Path = "App/images/logo.ico"
+    logo_Path = "App/images/logo.png"
+    load_Path = "App/images/carga.gif"
 
     def setupUi(self, window):
         # definimos el nombre e icono de la App
@@ -34,7 +34,7 @@ class Gui_MainWindow(object):
         self.central_widget = QtWidgets.QWidget(window)
         self.central_widget.setObjectName("central_widget")
 
-        #definimos el frame de la pantalla inicial
+        # definimos el frame de la pantalla inicial
         self.frame_principal = QtWidgets.QFrame(self.central_widget)
         self.frame_principal.setGeometry(QtCore.QRect(0, 0, 500, 600))
         self.frame_principal.setFrameShape(QtWidgets.QFrame.NoFrame)
@@ -49,12 +49,14 @@ class Gui_MainWindow(object):
         self.label_logo.setObjectName("label_logo")
 
         # definimos la paleca de color para error los label de error
-        # # solo definimos la activa 
+        # # solo definimos la activa
         error_palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(255, 0, 0))
         brush.setStyle(QtCore.Qt.SolidPattern)
-        error_palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.WindowText, brush)
-        error_palette.setBrush(QtGui.QPalette.Inactive, QtGui.QPalette.WindowText, brush)
+        error_palette.setBrush(QtGui.QPalette.Active,
+                               QtGui.QPalette.WindowText, brush)
+        error_palette.setBrush(QtGui.QPalette.Inactive,
+                               QtGui.QPalette.WindowText, brush)
 
         # definimos el font a usar en los label
         arialFont_label = QtGui.QFont()
@@ -75,18 +77,20 @@ class Gui_MainWindow(object):
         # definimos el label Inicio
         self.label_inicio = QtWidgets.QLabel(self.frame_principal)
         self.label_inicio.setGeometry(QtCore.QRect(100, 240, 80, 35))
-        self.label_inicio.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        self.label_inicio.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         self.label_inicio.setFont(arialFont_label)
         self.label_inicio.setObjectName("label_inicio")
 
         # definimos la caja de texto para el inicio
         self.intro_inicio = QtWidgets.QLineEdit(self.frame_principal)
         self.intro_inicio.setGeometry(QtCore.QRect(190, 240, 175, 35))
-        self.intro_inicio.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        self.intro_inicio.setAlignment(
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         self.intro_inicio.setFont(arialFont_intro)
         self.intro_inicio.setStyleSheet("border : none;")
         self.intro_inicio.setObjectName("intro_inicio")
-        
+
         # definimos la linea para resaltar la introduccion del inicio
         self.line_inicio = QtWidgets.QFrame(self.frame_principal)
         self.line_inicio.setGeometry(QtCore.QRect(190, 276, 175, 2))
@@ -96,9 +100,11 @@ class Gui_MainWindow(object):
         # definimos el label de Inicio invalido
         self.label_invalid_inicio = QtWidgets.QLabel(self.frame_principal)
         self.label_invalid_inicio.setGeometry(QtCore.QRect(190, 275, 111, 21))
-        self.label_invalid_inicio.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        self.label_invalid_inicio.setAlignment(
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         self.label_invalid_inicio.setPalette(error_palette)
-        self.label_invalid_inicio.setStyleSheet("background-color: transparent")
+        self.label_invalid_inicio.setStyleSheet(
+            "background-color: transparent")
         self.label_invalid_inicio.setObjectName("label_invalid_inicio")
         # # lo escondemos mientras no sea necesario
         self.label_invalid_inicio.hide()
@@ -106,7 +112,8 @@ class Gui_MainWindow(object):
         # definimos el label destino
         self.label_destino = QtWidgets.QLabel(self.frame_principal)
         self.label_destino.setGeometry(QtCore.QRect(100, 330, 80, 35))
-        self.label_destino.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        self.label_destino.setAlignment(
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         self.label_destino.setFont(arialFont_label)
         self.label_destino.setObjectName("label_destino")
 
@@ -127,9 +134,11 @@ class Gui_MainWindow(object):
         # definimos el label de Destino invalido
         self.label_invalid_destino = QtWidgets.QLabel(self.frame_principal)
         self.label_invalid_destino.setGeometry(QtCore.QRect(190, 365, 111, 21))
-        self.label_invalid_destino.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        self.label_invalid_destino.setAlignment(
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         self.label_invalid_destino.setPalette(error_palette)
-        self.label_invalid_destino.setStyleSheet("background-color: transparent")
+        self.label_invalid_destino.setStyleSheet(
+            "background-color: transparent")
         self.label_invalid_destino.setObjectName("label_invalid_destino")
         # # lo escondemos mientras no sea necesario
         self.label_invalid_destino.hide()
@@ -142,9 +151,6 @@ class Gui_MainWindow(object):
         # # definimos la accion al presionar el boton
         self.button_calcular.clicked.connect(self.calcularAction)
         self.button_calcular.setObjectName("button_calcular")
-
-        # definimos nuestro pool de threads
-        self.threadpool = QtCore.QThreadPool()
 
         # # # # # # Frame de carga # # # # # #
         # definimos el segundo frame 2 "pantalla de carga"
@@ -161,18 +167,18 @@ class Gui_MainWindow(object):
         arialFont_WaitingLabel.setPointSize(12)
         arialFont_WaitingLabel.setBold(True)
         arialFont_WaitingLabel.setWeight(75)
-    
+
         # definimos el label para el gif de carga
         self.label_cargaMovie = QtWidgets.QLabel(self.frame_carga)
         self.label_cargaMovie.setGeometry(QtCore.QRect(75, 40, 100, 100))
         self.label_cargaMovie.setScaledContents(True)
 
-        ## definimos el label para el mensaje de carga
+        # definimos el label para el mensaje de carga
         self.label_carga = QtWidgets.QLabel(self.frame_carga)
         self.label_carga.setGeometry(QtCore.QRect(75, 150, 100, 25))
-        self.label_carga.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        self.label_carga.setAlignment(
+            QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.label_carga.setFont(arialFont_WaitingLabel)
-        
 
         # # # # # # Frame de solucion # # # # # #
         # definimos el segundo frame 3 "pantalla de solucion"
@@ -182,19 +188,17 @@ class Gui_MainWindow(object):
         self.frame_solucion.setObjectName("frame_solucion")
         # # iniciamos el frame oculto
         self.frame_solucion.hide()
-        # definimos el segundo frame 3 "pantalla de solucion"
-        self.frame_solucion = QtWidgets.QFrame(self.central_widget)
-        self.frame_solucion.setGeometry(QtCore.QRect(0, 0, 500, 600))
-        self.frame_solucion.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.frame_solucion.setObjectName("frame_solucion")
-        # # iniciamos el frame oculto
-        self.frame_solucion.hide()
+
         '''
         Resto de elementos para la Ventana de solucion
         '''
+        # definimos el widgetBrowser
+        self.browser = QtWebEngineWidgets.QWebEngineView(self.frame_solucion)
+        self.browser.setGeometry(QtCore.QRect(0, 0, 500, 500))
+
         # definimos un boton para volver a la pagina principal
         self.button_volver_frame1 = QtWidgets.QPushButton(self.frame_solucion)
-        self.button_volver_frame1.setGeometry(QtCore.QRect(200, 500, 100, 30))
+        self.button_volver_frame1.setGeometry(QtCore.QRect(200, 530, 100, 30))
         # # definimos la accion del button
         self.button_volver_frame1.clicked.connect(self.volver_framePrincipal)
         self.button_volver_frame1.setObjectName("button_volver_frame1")
@@ -214,7 +218,7 @@ class Gui_MainWindow(object):
         image = QtGui.QImage(self.logo_Path)
         pixmap = QtGui.QPixmap.fromImage(image)
         self.label_logo.setPixmap(pixmap)
-        #definimos el contenido del resto de labels y el button
+        # definimos el contenido del resto de labels y el button
         self.label_inicio.setText("Inicio:")
         self.label_destino.setText("Destino:")
         self.button_calcular.setText("Calcular")
@@ -228,6 +232,7 @@ class Gui_MainWindow(object):
 
         # # # # # # Definimos los textos del frame solucion
         self.button_volver_frame1.setText("Volver")
+        # self.browser.setHtml("<p>Hola</p>")
 
     def setCompleter(self, names):
         # definimos un completer con los nombres especificados
@@ -237,7 +242,7 @@ class Gui_MainWindow(object):
         completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.intro_inicio.setCompleter(completer)
         self.intro_destino.setCompleter(completer)
-   
+
     def calcularAction(self):
         # comprobamos si el inicio es una estacion de valida
         if self.intro_inicio.text() not in self.names:
@@ -252,41 +257,33 @@ class Gui_MainWindow(object):
             self.label_invalid_destino.hide()
         # si destino y origen son validos, se lanza un tread en el que se lanza el algoritmo
         if self.intro_inicio.text() in self.names and self.intro_destino.text() in self.names:
-        # if True:
+            # if True:
             self.frame_principal.hide()
             self.label_cargaMovie.movie().start()
             self.frame_carga.show()
             # Lanzamos el algoritmo
             worker = Worker(self.doAlgorithm)
-            worker.signals.finished.connect(self.algorithmDone)
+            worker.signals.result.connect(self.algorithmDone)
             self.poolThread.start(worker)
-            
+
     def volver_framePrincipal(self):
         self.intro_inicio.clear()
         self.intro_destino.clear()
         self.frame_solucion.hide()
         self.frame_principal.show()
-        
+
         # realiza las operaciones para el frame de soluciones
-    def algorithmDone(self):
+    def algorithmDone(self, data):
+        self.browser.setHtml(data.getvalue().decode())
         self.frame_carga.hide()
         self.frame_solucion.show()
-        pass
-    
-    def doAlgorithm(self):
-        '''
-        Aqui se debe llamar al algoritmo
-        '''
-        time.sleep(5)
+         
 
-if __name__ == "__main__":
-    import sys
-    nombres = ["Luis", "Lian", "Luisa", "Alberto", "Elisa", "Elma"]
-    nombres.sort()
-    app = QtWidgets.QApplication(sys.argv)
-    mainWindow = QtWidgets.QMainWindow()
-    ui = Gui_MainWindow()
-    ui.setupUi(mainWindow)
-    ui.setCompleter(nombres)
-    mainWindow.show()
-    sys.exit(app.exec_())
+    def doAlgorithm(self):
+        solution = Algorithm.Calcular(
+            self.intro_inicio.text(), self.intro_destino.text(), 500)
+        trayecto = []
+        for x in solution:
+            trayecto.append([float(x.longitud), float(x.latitud)])
+        data = mapa.gen(trayecto, solution[0].name, solution[-1].name)
+        return data
