@@ -8,11 +8,7 @@ def gen(trayecto, estaciones):
 
     m3 = folium.Map(location=[
                     37.99000470552127, 23.744516330538477], tiles='cartodbpositron', zoom_start=12)
-    # with open("Recursos/Coordenadas.csv") as metro:
-    #     csv_reader = csv.reader(metro, delimiter=",")
-    #     for row in csv_reader:
-    #         folium.Marker(location=[row[1], row[2]], popup=row[0], tooltip="Click here to see Popup", icon=folium.Icon(
-    #             color="lightblue", prefix="fa", icon="meter")).add_to(m3)
+
     folium.Marker(location=trayecto[0], tooltip="Origen: {}".format(estaciones[0]),
                   icon=folium.Icon(color='darkpurple', prefix='fa', icon='subway')).add_to(m3)
     folium.Marker(location=trayecto[-1], tooltip="Destino: {}".format(estaciones[-1]),
@@ -43,8 +39,10 @@ def gen(trayecto, estaciones):
         trayecto, color='orange', weight=6.5).add_to(f4)
 
     for i in range(1, len(trayecto)-1):
-        folium.CircleMarker(location=trayecto[i], radius=5, tooltip=estaciones[i],
-                        color='black', fill=True, fill_color='black').add_to(m3)
+        # folium.CircleMarker(location=trayecto[i], radius=5, tooltip=estaciones[i],
+        #                 color='black', fill=True, fill_color='black').add_to(m3)
+        folium.Marker(location=trayecto[i], tooltip=estaciones[i], icon=folium.Icon(
+            color='blue', prefix='fa', icon='meter')).add_to(m3)
     f1.add_to(m3)
     f2.add_to(m3)
     f3.add_to(m3)
