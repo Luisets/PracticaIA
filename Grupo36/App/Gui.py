@@ -6,7 +6,6 @@ from PySide2 import QtWidgets
 from PySide2 import QtCore
 from PySide2 import QtGui
 from App.Worker import Worker
-from random import randrange
 import App.Algorithm as Algorithm
 import time
 import App.Mapa as mapa
@@ -50,11 +49,11 @@ class AppGui(object):
         arialFont_time.setPointSize(15)
 
         # definimos label para la hora
-        self.label_time = QtWidgets.QLabel(self.frame_principal)
-        self.label_time.setGeometry(QtCore.QRect(425, 560, 55, 25))
-        self.label_time.setFont(arialFont_time)
-        self.label_time.setScaledContents(True)
-        self.label_time.setObjectName("label_time")
+        self.label_time_pricipal = QtWidgets.QLabel(self.central_widget)
+        self.label_time_pricipal.setGeometry(QtCore.QRect(425, 560, 55, 25))
+        self.label_time_pricipal.setFont(arialFont_time)
+        self.label_time_pricipal.setScaledContents(True)
+        self.label_time_pricipal.setObjectName("label_time_pricipal")
 
         # definimos el logo principal
         self.label_logo = QtWidgets.QLabel(self.frame_principal)
@@ -203,6 +202,12 @@ class AppGui(object):
         # # iniciamos el frame oculto
         self.frame_solucion.hide()
 
+        self.label_time_solucion = QtWidgets.QLabel(self.frame_solucion)
+        self.label_time_solucion.setGeometry(QtCore.QRect(425, 560, 55, 25))
+        self.label_time_solucion.setFont(arialFont_time)
+        self.label_time_solucion.setScaledContents(True)
+        self.label_time_solucion.setObjectName("label_time_pricipal")
+
         # definimos el widgetBrowser
         self.browser = QtWebEngineWidgets.QWebEngineView(self.frame_solucion)
         self.browser.setGeometry(QtCore.QRect(0, 0, 500, 500))
@@ -227,12 +232,21 @@ class AppGui(object):
     def fillTexts(self):
         # # # # # # Definimos la hora
         self.time = random.randint(300, 1440)
-        self.label_time.setText("{}:{}".format(
-            int(self.time / 60), self.time % 60))
+        hour = ""
+        minute = ""
+        if self.time / 60 < 10:
+            hour = "0{}".format(int(self.time / 60))
+        else:
+            hour = "{}".format(int(self.time / 60))
+        if self.time % 60 < 10:
+            minute = "0{}".format(self.time % 60)
+        else:
+            minute = "{}".format(self.time % 60)
+
         # # # # # # Definimos los textos para el frame principal
         # definimos le contenido del logo
-        image=QtGui.QImage(self.logo_Path)
-        pixmap=QtGui.QPixmap.fromImage(image)
+        image = QtGui.QImage(self.logo_Path)
+        pixmap = QtGui.QPixmap.fromImage(image)
         self.label_logo.setPixmap(pixmap)
         # definimos el contenido del resto de labels y el button
         self.label_inicio.setText("Inicio:")
@@ -240,20 +254,22 @@ class AppGui(object):
         self.button_calcular.setText("Calcular")
         self.label_invalid_inicio.setText("La estación no existe")
         self.label_invalid_destino.setText("La estación no existe")
+        self.label_time_pricipal.setText("{}:{}".format(hour, minute))
 
         # # # # # # Definimos los textos del frame de carga
-        load_movie=QtGui.QMovie(self.load_Path)
+        load_movie = QtGui.QMovie(self.load_Path)
         self.label_cargaMovie.setMovie(load_movie)
         self.label_carga.setText("Procesando")
 
         # # # # # # Definimos los textos del frame solucion
+        self.label_time_solucion.setText("{}:{}".format(hour, minute))
         self.button_volver_frame1.setText("Volver")
         # self.browser.setHtml("<p>Hola</p>")
 
     def setCompleter(self, names):
         # definimos un completer con los nombres especificados
-        self.names=names
-        completer=QtWidgets.QCompleter(names)
+        self.names = names
+        completer = QtWidgets.QCompleter(names)
         # hacemos que no sea case sensible
         completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.intro_inicio.setCompleter(completer)
@@ -278,7 +294,7 @@ class AppGui(object):
             self.label_cargaMovie.movie().start()
             self.frame_carga.show()
             # Lanzamos el algoritmo
-            worker=Worker(self.doAlgorithm)
+            worker = Worker(self.doAlgorithm)
             worker.signals.result.connect(self.algorithmDone)
             self.poolThread.start(worker)
 
@@ -295,10 +311,10 @@ class AppGui(object):
         self.frame_solucion.show()
 
     def doAlgorithm(self):
-        solution=Algorithm.Calcular(
+        solution = Algorithm.Calcular(
             self.intro_inicio.text(), self.intro_destino.text(), self.time)
-        trayecto=[]
+        trayecto = []
         for x in solution:
             trayecto.append([float(x.longitud), float(x.latitud)])
-        data=mapa.gen(trayecto, solution[0].name, solution[-1].name)
+        data = mapa.gen(trayecto, solution[0].name, solution[-1].name)
         return data
