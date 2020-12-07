@@ -6,6 +6,7 @@ Implementacion de una red de metro, para calcular el mejor trayecto entre dos es
 1. Tener Python instalado(versión 3.8 o superior).
 2. Tener instaladas las siguientes librerías:
     *   pandas
+    *   branca
     *   PySide2
     *   folium
     *   csv
