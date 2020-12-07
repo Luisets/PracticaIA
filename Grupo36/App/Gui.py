@@ -314,7 +314,9 @@ class AppGui(object):
         solution = Algorithm.Calcular(
             self.intro_inicio.text(), self.intro_destino.text(), self.time)
         trayecto = []
+        estaciones = []
         for x in solution:
             trayecto.append([float(x.longitud), float(x.latitud)])
-        data = mapa.gen(trayecto, solution[0].name, solution[-1].name)
+            estaciones.append(x.name)
+        data = mapa.gen(trayecto, estaciones)
         return data
