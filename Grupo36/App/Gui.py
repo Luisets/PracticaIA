@@ -1,3 +1,4 @@
+import random
 from PySide2.QtGui import QIcon, QPixmap
 from PySide2.QtWidgets import QWidget
 from PySide2 import QtWebEngineWidgets
@@ -5,18 +6,19 @@ from PySide2 import QtWidgets
 from PySide2 import QtCore
 from PySide2 import QtGui
 from App.Worker import Worker
+from random import randrange
 import App.Algorithm as Algorithm
 import time
 import App.Mapa as mapa
 import io
 
 
-class Gui_MainWindow(object):
+class AppGui(object):
 
     # definimos la ubicacion del icono
-    icon_Path = "App/images/logo.ico"
-    logo_Path = "App/images/logo.png"
-    load_Path = "App/images/carga.gif"
+    icon_Path = "Images/logo.ico"
+    logo_Path = "Images/logo.png"
+    load_Path = "Images/carga.gif"
 
     def setupUi(self, window):
         # definimos el nombre e icono de la App
@@ -41,6 +43,18 @@ class Gui_MainWindow(object):
         self.frame_principal.setObjectName("frame_principal")
         # definimos central_windget como widget principal de la ventana
         window.setCentralWidget(self.central_widget)
+
+        # definimos el font para la hora
+        arialFont_time = QtGui.QFont()
+        arialFont_time.setFamily("Arial")
+        arialFont_time.setPointSize(15)
+
+        # definimos label para la hora
+        self.label_time = QtWidgets.QLabel(self.frame_principal)
+        self.label_time.setGeometry(QtCore.QRect(425, 560, 55, 25))
+        self.label_time.setFont(arialFont_time)
+        self.label_time.setScaledContents(True)
+        self.label_time.setObjectName("label_time")
 
         # definimos el logo principal
         self.label_logo = QtWidgets.QLabel(self.frame_principal)
@@ -189,9 +203,6 @@ class Gui_MainWindow(object):
         # # iniciamos el frame oculto
         self.frame_solucion.hide()
 
-        '''
-        Resto de elementos para la Ventana de solucion
-        '''
         # definimos el widgetBrowser
         self.browser = QtWebEngineWidgets.QWebEngineView(self.frame_solucion)
         self.browser.setGeometry(QtCore.QRect(0, 0, 500, 500))
@@ -199,6 +210,7 @@ class Gui_MainWindow(object):
         # definimos un boton para volver a la pagina principal
         self.button_volver_frame1 = QtWidgets.QPushButton(self.frame_solucion)
         self.button_volver_frame1.setGeometry(QtCore.QRect(200, 530, 100, 30))
+        self.button_volver_frame1.setStyleSheet("background-color: #A0A0A0A0")
         # # definimos la accion del button
         self.button_volver_frame1.clicked.connect(self.volver_framePrincipal)
         self.button_volver_frame1.setObjectName("button_volver_frame1")
@@ -213,10 +225,14 @@ class Gui_MainWindow(object):
         self.poolThread = QtCore.QThreadPool()
 
     def fillTexts(self):
+        # # # # # # Definimos la hora
+        self.time = random.randint(300, 1440)
+        self.label_time.setText("{}:{}".format(
+            int(self.time / 60), self.time % 60))
         # # # # # # Definimos los textos para el frame principal
         # definimos le contenido del logo
-        image = QtGui.QImage(self.logo_Path)
-        pixmap = QtGui.QPixmap.fromImage(image)
+        image=QtGui.QImage(self.logo_Path)
+        pixmap=QtGui.QPixmap.fromImage(image)
         self.label_logo.setPixmap(pixmap)
         # definimos el contenido del resto de labels y el button
         self.label_inicio.setText("Inicio:")
@@ -226,7 +242,7 @@ class Gui_MainWindow(object):
         self.label_invalid_destino.setText("La estación no existe")
 
         # # # # # # Definimos los textos del frame de carga
-        load_movie = QtGui.QMovie(self.load_Path)
+        load_movie=QtGui.QMovie(self.load_Path)
         self.label_cargaMovie.setMovie(load_movie)
         self.label_carga.setText("Procesando")
 
@@ -236,8 +252,8 @@ class Gui_MainWindow(object):
 
     def setCompleter(self, names):
         # definimos un completer con los nombres especificados
-        self.names = names
-        completer = QtWidgets.QCompleter(names)
+        self.names=names
+        completer=QtWidgets.QCompleter(names)
         # hacemos que no sea case sensible
         completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.intro_inicio.setCompleter(completer)
@@ -262,7 +278,7 @@ class Gui_MainWindow(object):
             self.label_cargaMovie.movie().start()
             self.frame_carga.show()
             # Lanzamos el algoritmo
-            worker = Worker(self.doAlgorithm)
+            worker=Worker(self.doAlgorithm)
             worker.signals.result.connect(self.algorithmDone)
             self.poolThread.start(worker)
 
@@ -277,13 +293,12 @@ class Gui_MainWindow(object):
         self.browser.setHtml(data.getvalue().decode())
         self.frame_carga.hide()
         self.frame_solucion.show()
-         
 
     def doAlgorithm(self):
-        solution = Algorithm.Calcular(
-            self.intro_inicio.text(), self.intro_destino.text(), 500)
-        trayecto = []
+        solution=Algorithm.Calcular(
+            self.intro_inicio.text(), self.intro_destino.text(), self.time)
+        trayecto=[]
         for x in solution:
             trayecto.append([float(x.longitud), float(x.latitud)])
-        data = mapa.gen(trayecto, solution[0].name, solution[-1].name)
+        data=mapa.gen(trayecto, solution[0].name, solution[-1].name)
         return data

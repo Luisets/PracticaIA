@@ -1,9 +1,10 @@
+import random
+import sys
 from PySide2 import QtWidgets
-from App.Gui_MainWindow import Gui_MainWindow
+from App.Gui import AppGui
 
 
 def main():
-    import sys
     nombres = ["Agios Antonios", "Sepolia", "Attiki", "Larissa Station", "Metaxourgeio", "Omonoia", "Panepistimio",
                "Syntagma", "Akropoli", "Syngrou-Fix ", "Neos Kosmos", "Agios Ioannis", "Dafni", "Agios Dimitrios",
                "Egaleo", "Eleonas", "Kerameikos", "Monastiraki", "Evangelismos", "Megaro Moussikis",
@@ -15,11 +16,12 @@ def main():
     nombres.sort()
     app = QtWidgets.QApplication(sys.argv)
     mainWindow = QtWidgets.QMainWindow()
-    ui = Gui_MainWindow()
+    ui = AppGui()
     ui.setupUi(mainWindow)
     ui.setCompleter(nombres)
     mainWindow.show()
     sys.exit(app.exec_())
+    pass
 
 
 if __name__ == "__main__":

@@ -105,16 +105,16 @@ def Algoritmo(grafo, inicio: str, final: str, distancias, minuto):
     open = []
     closed = []
     end_index = toGetIndex.index(final)
-    tiempo_extra_trasbordo = 0
+    tiempo_hora_punta = 0
 
     if (minuto <= 360):
-        tiempo_extra_trasbordo = 3
+        tiempo_hora_punta = 3
     elif (minuto <= 1230):
-        tiempo_extra_trasbordo = 1.5
+        tiempo_hora_punta = 1.5
     elif (minuto <= 1320):
-        tiempo_extra_trasbordo = 2.1
+        tiempo_hora_punta = 2.1
     else:
-        tiempo_extra_trasbordo = 3
+        tiempo_hora_punta = 3
 
     ini_node = Node(inicio, None)
     end_node = Node(final, None)
@@ -150,26 +150,26 @@ def Algoritmo(grafo, inicio: str, final: str, distancias, minuto):
             if (act_node != ini_node):
                 # Monastiraki
                 if((act_node.parent.name == "Kerameikos" or act_node.parent.name == "Syntagma") and (vecino.name == "Omonia" or vecino.name == "Thissio")):
-                    peso_transbordo = 0.45 + tiempo_extra_trasbordo
+                    peso_transbordo = 0.45 + tiempo_hora_punta
                 if((act_node.parent.name == "Omonia" or act_node.parent.name == "Thissio") and (vecino.name == "Syntagma" or vecino.name == "Kerameikos")):
-                    peso_transbordo = 0.45 + tiempo_extra_trasbordo
+                    peso_transbordo = 0.45 + tiempo_hora_punta
                 # Omonia
                 if((act_node.parent.name == "Monastiraki" or act_node.parent.name == "Victoria") and (vecino.name == "Panepistimio" or vecino.name == "Metaxourgeio")):
-                    peso_transbordo = 0.60 + tiempo_extra_trasbordo
+                    peso_transbordo = 0.60 + tiempo_hora_punta
                 if((act_node.parent.name == "Metaxourgeio" or act_node.parent.name == "Panepistimio") and (vecino.name == "Victoria" or vecino.name == "Monastiraki")):
-                    peso_transbordo = 0.60 + tiempo_extra_trasbordo
+                    peso_transbordo = 0.60 + tiempo_hora_punta
 
                 # Attiki
                 if((act_node.parent.name == "Aghios Nikolaos" or act_node.parent.name == "Victoria") and (vecino.name == "Sepolia" or vecino.name == "Larissa Station")):
-                    peso_transbordo = 0.2 + tiempo_extra_trasbordo
+                    peso_transbordo = 0.2 + tiempo_hora_punta
                 if((act_node.parent.name == "Sepolia" or act_node.parent.name == "Larissa Station") and (vecino.name == "Aghios Nikolaos" or vecino.name == "Victoria")):
-                    peso_transbordo = 0.2 + tiempo_extra_trasbordo
+                    peso_transbordo = 0.2 + tiempo_hora_punta
 
                 # Syntagma
                 if((act_node.parent.name == "Panepistimio" or act_node.parent.name == "Akropoli") and (vecino.name == "Evangelismos" or vecino.name == "Monastiraki")):
-                    peso_transbordo = 0.52 + tiempo_extra_trasbordo
+                    peso_transbordo = 0.52 + tiempo_hora_punta
                 if((act_node.parent.name == "Evangelismos" or act_node.parent.name == "Monastiraki") and (vecino.name == "Panepistimio" or vecino.name == "Akropoli")):
-                    peso_transbordo = 0.52 + tiempo_extra_trasbordo
+                    peso_transbordo = 0.52 + tiempo_hora_punta
 
             vecino.g = act_node.g + \
                 float(grafo.get(act_node.name, vecino.name)) + peso_transbordo
@@ -188,8 +188,3 @@ def add_to_open(open, neighbor):
             return False
     return True
 
-
-if __name__ == "__main__":
-    obj = Calcular("Metaxourgeio", "Attiki", 0)
-    for x in obj:
-        print("estacion: {}, longitud: {}, latitud: {}\n".format(x.name, x.longitud, x.latitud))
